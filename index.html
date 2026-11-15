@@ -4,28 +4,243 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Restaurant Name Generator</title>
-  <style>
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
-           background: #c8102e; color: #ffd700; font-family: Georgia, serif; text-align: center; }
-    h1 { font-size: clamp(2rem, 8vw, 4rem); margin: 0 0 1rem; text-shadow: 3px 3px 0 #000; }
-    button { font-size: 1.5rem; padding: .75rem 2rem; border: 4px solid #ffd700; border-radius: 999px;
-             background: #000; color: #ffd700; cursor: pointer; }
-    small { display: block; margin-top: 2rem; opacity: .7; }
-  </style>
+  <meta name="description" content="Spin the reels and open your very own strip-mall Chinese restaurant. Authentic* names, hot and fresh. *Not authentic.">
+  <meta name="theme-color" content="#b30d1b">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Restaurant Name Generator">
+  <meta property="og:description" content="Spin the reels and open your very own strip-mall Chinese restaurant. Jade Garden? Panda Palace? Wok This Way?">
+  <meta property="og:url" content="https://wkoffel.github.io/chinese-restaurant-generator/">
+  <meta property="og:image" content="https://wkoffel.github.io/chinese-restaurant-generator/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Pacifico&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1 id="name">Golden Panda</h1>
-    <button id="spin">Spin!</button>
-    <small>Deployment test page &middot; JS is <span id="js">not</span> running</small>
+
+  <!-- Reusable artwork -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff3a8"/>
+        <stop offset=".35" stop-color="#ffd23f"/>
+        <stop offset=".6" stop-color="#d99a0b"/>
+        <stop offset="1" stop-color="#ffe680"/>
+      </linearGradient>
+      <radialGradient id="lanternGlow" cx=".4" cy=".35" r=".7">
+        <stop offset="0" stop-color="#ff6a4d"/>
+        <stop offset=".55" stop-color="#e0141f"/>
+        <stop offset="1" stop-color="#8f0610"/>
+      </radialGradient>
+      <linearGradient id="cookieGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f6c66e"/>
+        <stop offset="1" stop-color="#c47a22"/>
+      </linearGradient>
+
+      <symbol id="lantern" viewBox="0 0 80 150">
+        <line x1="40" y1="0" x2="40" y2="22" stroke="#ffd23f" stroke-width="2"/>
+        <rect x="24" y="20" width="32" height="10" rx="2" fill="url(#gold)" stroke="#8a5a00"/>
+        <ellipse cx="40" cy="68" rx="36" ry="40" fill="url(#lanternGlow)" stroke="#7a040c" stroke-width="2"/>
+        <path d="M40 28 V108 M22 32 Q8 68 22 104 M58 32 Q72 68 58 104" stroke="#ffb34d" stroke-width="1.6" fill="none" opacity=".75"/>
+        <text x="40" y="78" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="22" fill="#ffd23f">$</text>
+        <rect x="24" y="104" width="32" height="10" rx="2" fill="url(#gold)" stroke="#8a5a00"/>
+        <path d="M30 114 v28 M35 114 v32 M40 114 v34 M45 114 v32 M50 114 v28" stroke="#ffd23f" stroke-width="2"/>
+      </symbol>
+
+      <symbol id="coin" viewBox="0 0 40 40">
+        <path fill-rule="evenodd" fill="url(#gold)" stroke="#8a5a00" stroke-width="2"
+              d="M20 2a18 18 0 1 0 0.01 0Z M14 14h12v12h-12Z"/>
+        <circle cx="20" cy="20" r="13.5" fill="none" stroke="#b07800" stroke-width="1.2"/>
+      </symbol>
+
+      <symbol id="envelope" viewBox="0 0 30 40">
+        <rect x="1" y="1" width="28" height="38" rx="3" fill="#e0141f" stroke="#8f0610" stroke-width="2"/>
+        <path d="M1 12 Q15 22 29 12" fill="none" stroke="#ffd23f" stroke-width="2"/>
+        <circle cx="15" cy="24" r="5" fill="url(#gold)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="rays" aria-hidden="true"></div>
+
+  <!-- Strip-mall bunting -->
+  <svg class="bunting" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <pattern id="flags" width="120" height="60" patternUnits="userSpaceOnUse">
+        <path d="M0 6 L30 50 L60 6 Z" fill="#ffd23f"/>
+        <path d="M60 6 L90 50 L120 6 Z" fill="#1d7be0"/>
+      </pattern>
+    </defs>
+    <path d="M0 6 Q600 22 1200 6" stroke="#222" stroke-width="2" fill="none"/>
+    <rect width="1200" height="60" fill="url(#flags)"/>
+  </svg>
+
+  <div class="ribbon-wrap" aria-hidden="true"><div class="corner-ribbon">GRAND OPENING!</div></div>
+
+  <header class="header">
+    <svg class="lantern lantern-left" aria-hidden="true"><use href="#lantern"/></svg>
+    <svg class="lantern lantern-right" aria-hidden="true"><use href="#lantern"/></svg>
+
+    <div class="open-sign" aria-hidden="true"><span>OPEN</span></div>
+
+    <p class="neon-script">The Original</p>
+    <h1 class="title">
+      <span class="title-top">Restaurant Name</span>
+      <span class="title-big">GENERATOR</span>
+    </h1>
+    <p class="subtitle">Authentic<sup>*</sup> Names &bull; Hot &amp; Fresh &bull; No MSG<sup>**</sup></p>
+  </header>
+
+  <main class="stage">
+    <section class="machine-col" aria-label="Name slot machine">
+      <div class="machine">
+        <svg class="roof" viewBox="0 0 600 170" aria-hidden="true">
+          <path d="M300 4 L306 30 L294 30 Z" fill="url(#gold)" stroke="#8a5a00"/>
+          <circle cx="300" cy="34" r="8" fill="url(#gold)" stroke="#8a5a00"/>
+          <!-- top tier -->
+          <path d="M150 78 Q300 30 450 78 Q474 80 492 56 Q486 92 456 98 L144 98 Q114 92 108 56 Q126 80 150 78 Z"
+                fill="#d0101e" stroke="#ffd23f" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M190 70 L200 96 M240 56 L245 96 M300 50 V96 M360 56 L355 96 M410 70 L400 96"
+                stroke="#8f0610" stroke-width="3"/>
+          <rect x="170" y="98" width="260" height="20" fill="#7a040c" stroke="#ffd23f" stroke-width="3"/>
+          <g fill="#ffd23f"><circle cx="200" cy="108" r="4"/><circle cx="250" cy="108" r="4"/><circle cx="300" cy="108" r="4"/><circle cx="350" cy="108" r="4"/><circle cx="400" cy="108" r="4"/></g>
+          <!-- bottom tier -->
+          <path d="M46 150 Q300 92 554 150 Q584 152 600 120 Q594 162 560 168 L40 168 Q6 162 0 120 Q16 152 46 150 Z"
+                fill="#d0101e" stroke="#ffd23f" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M100 140 L110 166 M180 124 L186 166 M260 116 L262 166 M340 116 L338 166 M420 124 L414 166 M500 140 L490 166"
+                stroke="#8f0610" stroke-width="3"/>
+        </svg>
+
+        <div class="cabinet">
+          <div class="plate"><span>★ Pull For Fortune ★</span></div>
+
+          <div class="bulb-frame" id="bulb-frame">
+            <div class="bulbs" id="bulbs" aria-hidden="true"></div>
+            <div class="reels">
+              <div class="reel" id="reel1" aria-hidden="true"><div class="strip"></div></div>
+              <div class="reel" id="reel2" aria-hidden="true"><div class="strip"></div></div>
+            </div>
+          </div>
+
+          <div class="placard-slot">
+            <div class="placard" id="bonus" aria-hidden="true"></div>
+          </div>
+
+          <button class="spin-btn" id="spin" type="button">
+            <span class="spin-main">SPIN!</span>
+            <span class="spin-sub">Open your restaurant</span>
+          </button>
+          <div class="machine-controls">
+            <button class="sound-toggle" id="sound" type="button" aria-pressed="false">
+              <span class="icon" aria-hidden="true">🔇</span><span class="label">Sound off</span>
+            </button>
+            <p class="hint">or press <kbd>Space</kbd></p>
+          </div>
+        </div>
+
+        <button class="lever" id="lever" type="button" aria-label="Pull the lever to spin" tabindex="-1">
+          <span class="lever-arm"><span class="lever-ball"></span></span>
+          <span class="lever-base"></span>
+        </button>
+      </div>
+    </section>
+
+    <section class="result-col">
+      <article class="menu-card is-empty" id="card" aria-live="polite">
+        <!-- Lucky cat, sitting on the counter -->
+        <svg class="lucky-cat" viewBox="0 0 200 240" aria-hidden="true">
+          <g class="cat-paw">
+            <rect x="22" y="58" width="38" height="96" rx="19" fill="#fff" stroke="#222" stroke-width="4"/>
+            <path d="M31 72 v10 M41 70 v12 M51 72 v10" stroke="#f29bb0" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <ellipse cx="100" cy="178" rx="64" ry="58" fill="#fff" stroke="#222" stroke-width="4"/>
+          <path d="M52 66 L58 20 L90 50 Z M148 66 L142 20 L110 50 Z" fill="#fff" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M60 56 L62 34 L80 50 Z M140 56 L138 34 L120 50 Z" fill="#f29bb0"/>
+          <ellipse cx="100" cy="94" rx="60" ry="50" fill="#fff" stroke="#222" stroke-width="4"/>
+          <path d="M138 50 q12 4 10 20 q-14 -4 -18 -14 Z" fill="#ff9a1f"/>
+          <path d="M66 92 q11 -12 22 0 M112 92 q11 -12 22 0" stroke="#222" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <circle cx="66" cy="108" r="8" fill="#f8b4c4"/><circle cx="134" cy="108" r="8" fill="#f8b4c4"/>
+          <path d="M95 102 h10 l-5 6 Z" fill="#f2738f"/>
+          <path d="M100 108 q-4 8 -11 4 M100 108 q4 8 11 4" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M44 100 h-26 M44 108 l-24 6 M156 100 h26 M156 108 l24 6" stroke="#222" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M50 138 Q100 156 150 138 L148 150 Q100 168 52 150 Z" fill="#e0141f" stroke="#7a040c" stroke-width="2"/>
+          <circle cx="100" cy="160" r="10" fill="url(#gold)" stroke="#8a5a00" stroke-width="2"/>
+          <ellipse cx="100" cy="200" rx="36" ry="28" fill="url(#gold)" stroke="#8a5a00" stroke-width="3"/>
+          <text x="100" y="196" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="12" fill="#7a3d00">LUCKY</text>
+          <text x="100" y="214" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="15" fill="#7a3d00">$8.95</text>
+          <ellipse cx="148" cy="204" rx="17" ry="14" fill="#fff" stroke="#222" stroke-width="4"/>
+        </svg>
+
+        <div class="card-inner">
+          <p class="welcome">Welcome to</p>
+          <h2 class="card-name" id="card-name">Your Restaurant</h2>
+          <p class="card-empty">Pull the lever to open for business!</p>
+
+          <div class="card-details">
+            <p class="est" id="card-est"></p>
+            <p class="rating" id="card-rating"></p>
+            <div class="dish">
+              <p class="dish-label">House Specialty</p>
+              <p class="dish-line"><span id="card-dish"></span><span class="leader"></span><span id="card-price"></span></p>
+              <p class="dish-side" id="card-side"></p>
+            </div>
+            <p class="phone"><span aria-hidden="true">☎</span> <span id="card-phone"></span></p>
+            <p class="delivery">Free Delivery Over $15 &bull; Cash Preferred</p>
+            <button class="share-btn" id="share" type="button">📣 Share This Restaurant</button>
+          </div>
+        </div>
+      </article>
+
+      <section class="cookie-plate is-empty" id="cookie-plate">
+        <p class="cookie-label">Complimentary Fortune Cookie</p>
+        <button class="cookie" id="cookie" type="button" aria-label="Crack open your fortune cookie">
+          <svg viewBox="0 0 200 130" aria-hidden="true">
+            <defs>
+              <clipPath id="leftHalf"><rect x="0" y="0" width="100" height="130"/></clipPath>
+              <clipPath id="rightHalf"><rect x="100" y="0" width="100" height="130"/></clipPath>
+            </defs>
+            <g class="cookie-half left" clip-path="url(#leftHalf)">
+              <path d="M14 90 Q22 18 100 18 Q178 18 186 90 Q144 64 100 108 Q56 64 14 90 Z" fill="url(#cookieGrad)" stroke="#8a4b0c" stroke-width="3"/>
+              <path d="M40 70 Q70 40 100 40" stroke="#ffe0a0" stroke-width="5" fill="none" opacity=".6" stroke-linecap="round"/>
+            </g>
+            <g class="cookie-half right" clip-path="url(#rightHalf)">
+              <path d="M14 90 Q22 18 100 18 Q178 18 186 90 Q144 64 100 108 Q56 64 14 90 Z" fill="url(#cookieGrad)" stroke="#8a4b0c" stroke-width="3"/>
+              <path d="M100 30 Q104 70 100 106" stroke="#8a4b0c" stroke-width="2" fill="none"/>
+            </g>
+            <rect class="slip-peek" x="150" y="70" width="44" height="12" fill="#fffdf2" stroke="#d9cfa8" transform="rotate(-14 150 70)"/>
+          </svg>
+          <span class="cookie-cta">Tap to crack!</span>
+        </button>
+        <div class="fortune" id="fortune" aria-live="polite">
+          <p class="fortune-text" id="fortune-text"></p>
+          <p class="fortune-nums">Lucky Numbers <span id="fortune-nums"></span></p>
+        </div>
+      </section>
+    </section>
   </main>
-  <script>
-    const a = ["China", "Golden", "Panda", "Jade", "Lucky", "Dragon"];
-    const b = ["Garden", "Palace", "Wok", "Lotus", "Express", "Buffet"];
-    const pick = l => l[Math.floor(Math.random() * l.length)];
-    document.getElementById("js").textContent = "";
-    document.getElementById("spin").onclick = () =>
-      document.getElementById("name").textContent = pick(a) + " " + pick(b);
-  </script>
+
+  <footer class="footer">
+    <svg class="takeout" viewBox="0 0 120 130" aria-hidden="true">
+      <path d="M30 34 Q60 -14 90 34" stroke="#888" stroke-width="3" fill="none"/>
+      <path d="M14 44 L30 16 L60 30 L90 16 L106 44 Z" fill="#f4f1ea" stroke="#444" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M14 44 L106 44 L92 124 L28 124 Z" fill="#fff" stroke="#444" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M60 58 L74 70 L46 70 Z M50 70 h20 v8 h-20 Z M44 86 L60 76 L76 86 Z M48 86 h24 v14 h-24 Z" fill="#d0101e"/>
+      <text x="60" y="116" text-anchor="middle" font-family="Bungee, Impact, sans-serif" font-size="10" fill="#d0101e">THANK YOU</text>
+    </svg>
+    <p><sup>*</sup>Not authentic. <sup>**</sup>Some MSG.</p>
+    <p>A loving parody of strip-mall restaurant signage everywhere. Any resemblance to the place down the street is purely inevitable.</p>
+  </footer>
+
+  <div class="celebrate" id="celebrate" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
